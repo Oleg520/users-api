@@ -1,0 +1,60 @@
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  db:
+    image: postgres:16.1
+    container_name: aston_db
+    ports:
+      - "6541:5432"
+    environment:
+      POSTGRES_DB: aston
+      POSTGRES_USER: aston
+      POSTGRES_PASSWORD: aston
+      TZ: Europe/Moscow
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  user-service:
+    build: ./user-service
+    image: user-service:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - kafka
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/aston
+      SPRING_DATASOURCE_USERNAME: aston
+      SPRING_DATASOURCE_PASSWORD: aston
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+  notification-service:
+    build: ./notification-service
+    image: notification-service:latest
+    ports:
+      - "8081:8080"
+    depends_on:
+      - kafka
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092

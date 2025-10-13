@@ -67,13 +67,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Long delete(Long userId) {
+    public void delete(Long userId) {
         User user = getUserByIdOrThrow(userId);
         userRepository.delete(user);
 
         userEventProducer.sendUserEvent(new UserEvent(user.getEmail(), UserOperationType.DELETE));
         log.info("Удален пользователь \"{}\" с id {}", user.getName(), user.getId());
-        return user.getId();
     }
 
     private void checkEmailUnique(String email) {

@@ -22,6 +22,3 @@ app:
   kafka:
     topics:
       user-events: user-events
-
-springdoc:
-  enable-hateoas: false

@@ -12,8 +12,8 @@ public class UserEventListener {
     private final EmailService emailService;
 
     @KafkaListener(
-            topics = "${app.kafka.topics.user-events}",
-            groupId = "${app.kafka.consumer.group-id}"
+            topics = "user-events",
+            groupId = "notification-group"
     )
     public void handleUserEvent(UserEvent event) {
         emailService.send(new NewUserEventDto(event.email(), event.operation()));

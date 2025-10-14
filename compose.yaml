@@ -43,18 +43,30 @@ services:
     depends_on:
       - db
       - kafka
+      - eureka-server
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/aston
       SPRING_DATASOURCE_USERNAME: aston
       SPRING_DATASOURCE_PASSWORD: aston
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:8761/eureka/
+
+  eureka-server:
+    build: ./eureka-server
+    image: eureka-server:latest
+    ports:
+      - "8761:8761"
+    environment:
+      SPRING_PROFILES_ACTIVE: default
 
   notification-service:
     build: ./notification-service
     image: notification-service:latest
     ports:
-      - "8081:8080"
+      - "8081:8081"
     depends_on:
       - kafka
+      - eureka-server
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:8761/eureka/

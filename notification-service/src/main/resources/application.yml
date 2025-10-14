@@ -2,6 +2,16 @@ server:
   port: 8081
 
 spring:
+  application:
+    name: notification-service
+  cloud:
+    service-registry:
+      auto-registration:
+        enabled: true
+    discovery:
+      enabled: true
+    config:
+      enabled: false
   kafka:
     bootstrap-servers: kafka:9092
     consumer:
@@ -11,9 +21,28 @@ spring:
       properties:
         spring.json.trusted.packages: "ru.oleg520.dto"
 
+eureka:
+  client:
+    enabled: true
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
 app:
   kafka:
     topics:
       user-events: user-events
     consumer:
       group-id: notification-group
+  
+  email:
+    templates:
+      create:
+        subject: "Добро пожаловать!"
+        message: "Ваш аккаунт был успешно создан. Добро пожаловать в нашу систему!"
+      delete:
+        subject: "Аккаунт удален"
+        message: "Ваш аккаунт был удален из системы. Спасибо за использование наших услуг!"

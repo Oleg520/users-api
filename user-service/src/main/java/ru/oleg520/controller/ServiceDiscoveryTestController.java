@@ -16,7 +16,7 @@ import ru.oleg520.dto.notification.NotificationType;
 public class ServiceDiscoveryTestController {
 
     private final RestTemplate restTemplate;
-    
+
     @Value("${app.notification.service-url:http://notification-service}")
     private String notificationServiceUrl;
 
@@ -43,10 +43,10 @@ public class ServiceDiscoveryTestController {
                 "Test notification from Service Discovery",
                 999L
             );
-            
+
             String url = notificationServiceUrl + "/api/notifications/send";
             String response = restTemplate.postForObject(url, request, String.class);
-            
+
             log.info("Test notification sent successfully: {}", response);
             return ResponseEntity.ok("Test notification sent: " + response);
         } catch (Exception e) {

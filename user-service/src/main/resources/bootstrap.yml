@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: user-service
+  cloud:
+    config:
+      enabled: true
+      uri: http://config-server:8888
+      fail-fast: false
+      retry:
+        initial-interval: 1000
+        multiplier: 1.1
+        max-attempts: 6
+        max-interval: 2000
+  profiles:
+    active: default
+
+eureka:
+  client:
+    enabled: true
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    prefer-ip-address: true

@@ -1,5 +1,7 @@
 package ru.oleg520.service;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,43 +17,49 @@ import ru.oleg520.model.User;
 public class NotificationService {
 
     private final RestTemplate restTemplate;
-    
+
     @Value("${app.notification.service-url:http://notification-service}")
     private String notificationServiceUrl;
 
+    @CircuitBreaker(name = "notification-service", fallbackMethod = "fallbackWelcomeNotification")
+    @Retry(name = "notification-service")
     public void sendWelcomeNotification(User user) {
-        try {
-            NotificationRequestDto request = new NotificationRequestDto(
-                user.getEmail(),
-                NotificationType.WELCOME,
-                "Добро пожаловать в нашу систему!",
-                user.getId()
-            );
-            
-            String url = notificationServiceUrl + "/api/notifications/send";
-            restTemplate.postForObject(url, request, String.class);
-            
-            log.info("Welcome notification sent successfully for user: {}", user.getEmail());
-        } catch (Exception e) {
-            log.error("Failed to send welcome notification for user: {}", user.getEmail(), e);
-        }
+        NotificationRequestDto request = new NotificationRequestDto(
+            user.getEmail(),
+            NotificationType.WELCOME,
+            "Добро пожаловать в нашу систему!",
+            user.getId()
+        );
+
+        String url = notificationServiceUrl + "/api/notifications/send";
+        restTemplate.postForObject(url, request, String.class);
+
+        log.info("Welcome notification sent successfully for user: {}", user.getEmail());
     }
 
+    @CircuitBreaker(name = "notification-service", fallbackMethod = "fallbackGoodbyeNotification")
+    @Retry(name = "notification-service")
     public void sendGoodbyeNotification(User user) {
-        try {
-            NotificationRequestDto request = new NotificationRequestDto(
-                user.getEmail(),
-                NotificationType.GOODBYE,
-                "Спасибо за использование наших услуг!",
-                user.getId()
-            );
-            
-            String url = notificationServiceUrl + "/api/notifications/send";
-            restTemplate.postForObject(url, request, String.class);
-            
-            log.info("Goodbye notification sent successfully for user: {}", user.getEmail());
-        } catch (Exception e) {
-            log.error("Failed to send goodbye notification for user: {}", user.getEmail(), e);
-        }
+        NotificationRequestDto request = new NotificationRequestDto(
+            user.getEmail(),
+            NotificationType.GOODBYE,
+            "Спасибо за использование наших услуг!",
+            user.getId()
+        );
+
+        String url = notificationServiceUrl + "/api/notifications/send";
+        restTemplate.postForObject(url, request, String.class);
+
+        log.info("Goodbye notification sent successfully for user: {}", user.getEmail());
+    }
+
+    public void fallbackWelcomeNotification(User user, Exception ex) {
+        log.warn("Fallback: Welcome notification failed for user: {}. Reason: {}",
+                user.getEmail(), ex.getMessage());
+    }
+
+    public void fallbackGoodbyeNotification(User user, Exception ex) {
+        log.warn("Fallback: Goodbye notification failed for user: {}. Reason: {}",
+                user.getEmail(), ex.getMessage());
     }
 }

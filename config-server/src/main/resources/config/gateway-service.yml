@@ -1,9 +1,4 @@
-server:
-  port: 8082
-
 spring:
-  application:
-    name: gateway-service
   cloud:
     service-registry:
       auto-registration:
@@ -12,27 +7,23 @@ spring:
       enabled: true
     gateway:
       routes:
-        # Маршрут для User Service
         - id: user-service
           uri: lb://user-service
           predicates:
             - Path=/api/users/**
           filters:
             - StripPrefix=1
-        
-        # Маршрут для Notification Service
+
         - id: notification-service
           uri: lb://notification-service
           predicates:
             - Path=/api/notifications/**
-        
-        # Маршрут для тестирования Service Discovery
+
         - id: service-discovery-test
           uri: lb://user-service
           predicates:
             - Path=/api/test/**
-      
-      # Глобальная CORS конфигурация
+
       globalcors:
         cors-configurations:
           '[/**]':
@@ -45,17 +36,14 @@ spring:
               - DELETE
               - OPTIONS
             allowedHeaders: "*"
-      
-      # Настройки по умолчанию
+
       httpclient:
         connect-timeout: 30000
         response-timeout: 30s
-      
-      # Метрики
+
       metrics:
         enabled: true
 
-# Eureka конфигурация
 eureka:
   client:
     enabled: true
@@ -68,7 +56,34 @@ eureka:
     lease-renewal-interval-in-seconds: 30
     lease-expiration-duration-in-seconds: 90
 
-# Логирование
+resilience4j:
+  circuitbreaker:
+    instances:
+      user-service:
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+      notification-service:
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+  retry:
+    instances:
+      user-service:
+        max-attempts: 3
+        wait-duration: 1s
+        exponential-backoff-multiplier: 2
+      notification-service:
+        max-attempts: 3
+        wait-duration: 1s
+        exponential-backoff-multiplier: 2
+
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
@@ -76,13 +91,19 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
 
-# Actuator endpoints
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics
+        include: health,info,metrics,prometheus,circuitbreakers,circuitbreakerevents,retries,retryevents
   endpoint:
     health:
       show-details: always
-      
+    circuitbreakers:
+      enabled: true
+    circuitbreakerevents:
+      enabled: true
+    retries:
+      enabled: true
+    retryevents:
+      enabled: true

@@ -19,16 +19,16 @@ public class NotificationApiController {
     @PostMapping("/send")
     public ResponseEntity<NotificationResponseDto> sendNotification(@RequestBody NotificationRequestDto request) {
         log.info("Received notification request for user: {}, type: {}", request.userId(), request.type());
-        
+
         try {
             boolean success = notificationApiService.sendNotification(request);
-            
+
             NotificationResponseDto response = new NotificationResponseDto(
                 success,
                 success ? "Notification sent successfully" : "Failed to send notification",
                 request.userId()
             );
-            
+
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             log.error("Error processing notification request", e);

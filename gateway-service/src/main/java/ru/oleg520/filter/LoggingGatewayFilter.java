@@ -20,19 +20,19 @@ public class LoggingGatewayFilter extends AbstractGatewayFilterFactory<LoggingGa
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
-            
+
             log.info("Incoming request: {} {}", request.getMethod(), request.getURI());
             log.info("Request headers: {}", request.getHeaders());
-            
+
             long startTime = System.currentTimeMillis();
-            
+
             return chain.filter(exchange).then(Mono.fromRunnable(() -> {
                 ServerHttpResponse response = exchange.getResponse();
                 long duration = System.currentTimeMillis() - startTime;
-                
-                log.info("Response: {} {} - Duration: {}ms", 
-                    request.getMethod(), 
-                    request.getURI(), 
+
+                log.info("Response: {} {} - Duration: {}ms",
+                    request.getMethod(),
+                    request.getURI(),
                     duration);
                 log.info("Response status: {}", response.getStatusCode());
             }));

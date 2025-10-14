@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 
         notificationService.sendWelcomeNotification(user);
         userEventProducer.sendUserEvent(new UserEvent(user.getEmail(), UserOperationType.CREATE));
-        
+
         log.info("Добавлен новый пользователь \"{}\" c id {}", user.getName(), user.getId());
         return userMapper.toDto(user);
     }
@@ -73,11 +73,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Long delete(Long userId) {
         User user = getUserByIdOrThrow(userId);
-        
+
         notificationService.sendGoodbyeNotification(user);
         userRepository.delete(user);
         userEventProducer.sendUserEvent(new UserEvent(user.getEmail(), UserOperationType.DELETE));
-        
+
         log.info("Удален пользователь \"{}\" с id {}", user.getName(), user.getId());
         return user.getId();
     }

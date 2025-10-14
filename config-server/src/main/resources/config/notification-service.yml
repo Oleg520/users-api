@@ -1,17 +1,4 @@
-server:
-  port: 8081
-
 spring:
-  application:
-    name: notification-service
-  cloud:
-    service-registry:
-      auto-registration:
-        enabled: true
-    discovery:
-      enabled: true
-    config:
-      enabled: false
   kafka:
     bootstrap-servers: kafka:9092
     consumer:
@@ -20,6 +7,11 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "ru.oleg520.dto.*"
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      max-poll-records: 500
+      session-timeout-ms: 30000
+      heartbeat-interval-ms: 10000
 
 eureka:
   client:
@@ -30,6 +22,8 @@ eureka:
       defaultZone: http://eureka-server:8761/eureka/
   instance:
     prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 90
 
 app:
   kafka:
@@ -37,7 +31,7 @@ app:
       user-events: user-events
     consumer:
       group-id: notification-group
-  
+
   email:
     templates:
       create:
@@ -46,3 +40,37 @@ app:
       delete:
         subject: "Аккаунт удален"
         message: "Ваш аккаунт был удален из системы. Спасибо за использование наших услуг!"
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      email-service:
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+  retry:
+    instances:
+      email-service:
+        max-attempts: 3
+        wait-duration: 1s
+        exponential-backoff-multiplier: 2
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,circuitbreakers,circuitbreakerevents,retries,retryevents
+  endpoint:
+    health:
+      show-details: always
+    circuitbreakers:
+      enabled: true
+    circuitbreakerevents:
+      enabled: true
+    retries:
+      enabled: true
+    retryevents:
+      enabled: true

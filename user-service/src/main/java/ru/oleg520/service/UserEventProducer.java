@@ -9,7 +9,7 @@ import ru.oleg520.dto.event.UserEvent;
 @RequiredArgsConstructor
 public class UserEventProducer {
     private final KafkaTemplate<String, UserEvent> kafkaTemplate;
-    
+
     private static final String USER_EVENTS_TOPIC = "user-events";
 
     public void sendUserEvent(UserEvent event) {

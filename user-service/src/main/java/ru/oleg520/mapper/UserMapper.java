@@ -1,11 +1,11 @@
 package ru.oleg520.mapper;
 
 import org.mapstruct.*;
-import ru.oleg520.dto.NewUserDto;
-import ru.oleg520.dto.UpdateUserDto;
-import ru.oleg520.dto.UserDto;
-import ru.oleg520.dto.CreateUserRequestDto;
-import ru.oleg520.dto.UserResponseDto;
+import ru.oleg520.dto.user.NewUserDto;
+import ru.oleg520.dto.user.UpdateUserDto;
+import ru.oleg520.dto.user.UserDto;
+import ru.oleg520.dto.user.CreateUserRequestDto;
+import ru.oleg520.dto.user.UserResponseDto;
 import ru.oleg520.model.User;
 
 @Mapper(componentModel = "spring")

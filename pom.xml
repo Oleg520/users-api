@@ -39,6 +39,7 @@
         <module>user-service</module>
         <module>notification-service</module>
         <module>eureka-server</module>
+        <module>gateway-service</module>
     </modules>
 
     <build>

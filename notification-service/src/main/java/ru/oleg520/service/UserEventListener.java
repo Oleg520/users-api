@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import ru.oleg520.dto.NewUserEventDto;
-import ru.oleg520.dto.UserEvent;
+import ru.oleg520.dto.event.UserEvent;
 
 @Service
 @RequiredArgsConstructor

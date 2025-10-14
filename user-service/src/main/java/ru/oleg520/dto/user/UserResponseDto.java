@@ -1,4 +1,4 @@
-package ru.oleg520.dto;
+package ru.oleg520.dto.user;
 
 public record UserResponseDto(
         Long id,

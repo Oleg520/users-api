@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import ru.oleg520.dto.UserEvent;
+import ru.oleg520.dto.event.UserEvent;
 
 @Configuration
 @RequiredArgsConstructor

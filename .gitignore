@@ -3,6 +3,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 db/
+GATEWAY_API_README.md
+SERVICE_DISCOVERY_README.md
 
 ### IntelliJ IDEA ###
 .idea/

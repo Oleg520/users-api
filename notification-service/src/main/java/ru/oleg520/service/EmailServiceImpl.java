@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.oleg520.dto.EmailSendResponse;
 import ru.oleg520.dto.NewUserEventDto;
-import ru.oleg520.dto.UserOperationType;
+import ru.oleg520.dto.event.UserOperationType;
 
 @Service
 @Slf4j

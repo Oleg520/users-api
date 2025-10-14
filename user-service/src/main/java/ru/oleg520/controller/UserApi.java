@@ -13,9 +13,9 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.oleg520.dto.CreateUserRequestDto;
-import ru.oleg520.dto.UpdateUserDto;
-import ru.oleg520.dto.UserResponseDto;
+import ru.oleg520.dto.user.CreateUserRequestDto;
+import ru.oleg520.dto.user.UpdateUserDto;
+import ru.oleg520.dto.user.UserResponseDto;
 
 @RequestMapping(path = "/users")
 @Tag(name = "Users", description = "Операции с пользователями")
@@ -29,7 +29,7 @@ public interface UserApi {
             responses = {
                     @ApiResponse(responseCode = "201", description = "User создан",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ru.oleg520.dto.UserResponseDto.class)
+                                    schema = @Schema(implementation = UserResponseDto.class)
                             ),
                             links = {
                                     @Link(name = "self", operationId = "getUser",

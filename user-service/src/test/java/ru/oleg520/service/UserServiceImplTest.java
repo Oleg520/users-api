@@ -7,9 +7,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.oleg520.dao.UserRepository;
-import ru.oleg520.dto.NewUserDto;
-import ru.oleg520.dto.UpdateUserDto;
-import ru.oleg520.dto.UserDto;
+import ru.oleg520.dto.user.NewUserDto;
+import ru.oleg520.dto.user.UpdateUserDto;
+import ru.oleg520.dto.user.UserDto;
 import ru.oleg520.exception.NotFoundException;
 import ru.oleg520.exception.ValidationException;
 import ru.oleg520.mapper.UserMapper;
@@ -32,12 +32,14 @@ class UserServiceImplTest {
     private UserRepository userRepository;
     @Mock
     private UserEventProducer userEventProducer;
+    @Mock
+    private NotificationService notificationService;
 
     private final UserMapper userMapper = new UserMapperImpl();
 
     @BeforeEach
     void setUp() {
-        userService = new UserServiceImpl(userRepository, userMapper, userEventProducer);
+        userService = new UserServiceImpl(userRepository, userMapper, userEventProducer, notificationService);
     }
 
     @Test

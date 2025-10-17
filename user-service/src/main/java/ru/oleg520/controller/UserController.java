@@ -11,11 +11,11 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestBody;
-import ru.oleg520.dto.NewUserDto;
-import ru.oleg520.dto.UpdateUserDto;
-import ru.oleg520.dto.UserDto;
-import ru.oleg520.dto.CreateUserRequestDto;
-import ru.oleg520.dto.UserResponseDto;
+import ru.oleg520.dto.user.NewUserDto;
+import ru.oleg520.dto.user.UpdateUserDto;
+import ru.oleg520.dto.user.UserDto;
+import ru.oleg520.dto.user.CreateUserRequestDto;
+import ru.oleg520.dto.user.UserResponseDto;
 import ru.oleg520.mapper.UserMapper;
 import ru.oleg520.service.UserService;
 
@@ -67,5 +67,10 @@ public class UserController implements UserApi {
     @DeleteMapping("/{userId}")
     public Long deleteUser(@PathVariable Long userId) {
         return userService.delete(userId);
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.ok("User service is healthy");
     }
 }

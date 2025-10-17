@@ -1,0 +1,46 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  cloud:
+    service-registry:
+      auto-registration:
+        enabled: true
+    discovery:
+      enabled: true
+    config:
+      server:
+        git:
+          uri: https://github.com/your-username/config-repo.git
+          default-label: main
+          clone-on-start: true
+        # Альтернативно, можно использовать файловую систему
+        native:
+          search-locations: classpath:/config
+  profiles:
+    active: native
+
+eureka:
+  client:
+    enabled: true
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,refresh
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    org.springframework.cloud.config: DEBUG

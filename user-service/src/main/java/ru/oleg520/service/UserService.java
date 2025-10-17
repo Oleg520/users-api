@@ -1,8 +1,8 @@
 package ru.oleg520.service;
 
-import ru.oleg520.dto.NewUserDto;
-import ru.oleg520.dto.UpdateUserDto;
-import ru.oleg520.dto.UserDto;
+import ru.oleg520.dto.user.NewUserDto;
+import ru.oleg520.dto.user.UpdateUserDto;
+import ru.oleg520.dto.user.UserDto;
 
 import java.util.List;
 

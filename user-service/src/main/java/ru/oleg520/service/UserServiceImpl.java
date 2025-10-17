@@ -5,7 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.oleg520.dao.UserRepository;
-import ru.oleg520.dto.*;
+import ru.oleg520.dto.user.*;
+import ru.oleg520.dto.event.*;
 import ru.oleg520.exception.NotFoundException;
 import ru.oleg520.exception.ValidationException;
 import ru.oleg520.mapper.UserMapper;
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final UserEventProducer userEventProducer;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -30,7 +32,9 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.fromNewUserDto(newUserDto);
         user = userRepository.save(user);
 
+        notificationService.sendWelcomeNotification(user);
         userEventProducer.sendUserEvent(new UserEvent(user.getEmail(), UserOperationType.CREATE));
+
         log.info("Добавлен новый пользователь \"{}\" c id {}", user.getName(), user.getId());
         return userMapper.toDto(user);
     }
@@ -69,9 +73,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Long delete(Long userId) {
         User user = getUserByIdOrThrow(userId);
-        userRepository.delete(user);
 
+        notificationService.sendGoodbyeNotification(user);
+        userRepository.delete(user);
         userEventProducer.sendUserEvent(new UserEvent(user.getEmail(), UserOperationType.DELETE));
+
         log.info("Удален пользователь \"{}\" с id {}", user.getName(), user.getId());
         return user.getId();
     }

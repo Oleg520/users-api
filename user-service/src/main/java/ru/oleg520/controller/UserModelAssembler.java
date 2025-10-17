@@ -7,7 +7,7 @@ import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.lang.NonNull;
-import ru.oleg520.dto.UserResponseDto;
+import ru.oleg520.dto.user.UserResponseDto;
 
 @Component
 @RequiredArgsConstructor

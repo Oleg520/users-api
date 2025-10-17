@@ -7,7 +7,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.oleg520.controller.NotificationController;
 import ru.oleg520.dto.NewUserEventDto;
-import ru.oleg520.dto.UserOperationType;
+import ru.oleg520.dto.event.UserOperationType;
 import ru.oleg520.service.EmailService;
 
 import static org.mockito.Mockito.verify;

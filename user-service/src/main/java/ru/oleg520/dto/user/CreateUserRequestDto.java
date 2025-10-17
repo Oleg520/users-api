@@ -1,4 +1,4 @@
-package ru.oleg520.dto;
+package ru.oleg520.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;

@@ -1,0 +1,76 @@
+spring:
+  kafka:
+    bootstrap-servers: kafka:9092
+    consumer:
+      group-id: notification-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "ru.oleg520.dto.*"
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      max-poll-records: 500
+      session-timeout-ms: 30000
+      heartbeat-interval-ms: 10000
+
+eureka:
+  client:
+    enabled: true
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 90
+
+app:
+  kafka:
+    topics:
+      user-events: user-events
+    consumer:
+      group-id: notification-group
+
+  email:
+    templates:
+      create:
+        subject: "Добро пожаловать!"
+        message: "Ваш аккаунт был успешно создан. Добро пожаловать в нашу систему!"
+      delete:
+        subject: "Аккаунт удален"
+        message: "Ваш аккаунт был удален из системы. Спасибо за использование наших услуг!"
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      email-service:
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+  retry:
+    instances:
+      email-service:
+        max-attempts: 3
+        wait-duration: 1s
+        exponential-backoff-multiplier: 2
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,circuitbreakers,circuitbreakerevents,retries,retryevents
+  endpoint:
+    health:
+      show-details: always
+    circuitbreakers:
+      enabled: true
+    circuitbreakerevents:
+      enabled: true
+    retries:
+      enabled: true
+    retryevents:
+      enabled: true
